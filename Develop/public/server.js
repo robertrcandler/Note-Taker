@@ -1,17 +1,21 @@
 // Require dependencies
 var http = require("http");
 var fs = require("fs");
+let jsonfile = "../db/db.json";
 
 // Set our port to 7070
 var PORT = 7070;
 
 var server = http.createServer(handleRequest);
 
+//make object with table array for db.json
+var obj = {table: []};
+
 function handleRequest(req, res) {
 
   // path is url
   var path = req.url;
-
+  
   // switch between index and notes page
   switch (path) {
 
@@ -46,7 +50,20 @@ function renderNote(req, res) {
   req.on("data", function(data) {
     requestData += data;
     console.log("You just posted some data to the server:\n", requestData);
-
+    //stringify the captured text, seperate it and save to seperate variables
+    var titledata = requestData.substring(
+      requestData.lastIndexOf("title=") + 6,
+      requestData.lastIndexOf("&text"));
+    var textdata = requestData.substring(
+      requestData.lastIndexOf("text=") + 5);
+    //add saved data to table object
+    obj.table.push({Title: titledata, text: textdata});
+    var jsonobj = JSON.stringify(obj);
+    //save to json
+    fs.appendFile(jsonfile, jsonobj, function(err) {
+      if (err) throw err;
+      console.log("Added to file");
+    });
     myHTML =
       "<html><head><title>Hello Noder!</title></head><body>" +
       "<h1>Thank you for the data: </h1><code>" +
