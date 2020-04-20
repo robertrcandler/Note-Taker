@@ -77,12 +77,28 @@ function renderNote(req, res) {
       console.log("Added to file");
     });
 
+    //create page with all the notes
     myHTML =
-      "<html><head><title>Hello Noder!</title></head><body>" +
-      "<h1>Thank you for the data: </h1><code>" +
-      requestData +
-      "</code>" +
-      "</body></html>";
+      "<html><head><title>Saved Notes!</title>" +
+      "<style>table {font-family: arial, sans-serif;" +
+      "border-collapse: collapse;width: 100%;}" +
+      "td, th {border: 1px solid black;text-align: left;"+
+      "padding: 8px;}tr:nth-child(even) {"+
+      "background-color: gray;}</style>"+
+      "</head><body>" +
+      "<h1>Saved Notes: </h1>" +
+      '<table><tr><th>Title</th><th>Content</th><th>Delete?</th></tr>';
+      console.log("B "+JSON.stringify(jason.table[0].Title));
+    for (var i=0;i < jason.table.length; i++) {
+      var tempTitle = JSON.stringify(jason.table[i].Title);
+      var temptext = JSON.stringify(jason.table[i].text);
+      //change + with spaces then add to myHTML
+      tempTitle.replace("+"," ");
+      tempTitle.replace("+"," ");
+      myHTML += "<tr><th>" + tempTitle + "</th><th>" +
+        temptext + "</th><th>Delete</th></tr>";
+    }
+    myHTML += "</table></body></html>";
   });
 
   // When the request has ended...
