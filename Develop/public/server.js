@@ -2,14 +2,17 @@
 var http = require("http");
 var fs = require("fs");
 let jsonfile = "../db/db.json";
+//get existing data from db.json file
+var jasonrequire = require("../db/db.json");
+var jason2 = JSON.stringify(jasonrequire);
+var jason = JSON.parse(jason2);
+console.log(jason);
 
 // Set our port to 7070
 var PORT = 7070;
 
 var server = http.createServer(handleRequest);
 
-//make object with table array for db.json
-var obj = {table: []};
 
 function handleRequest(req, res) {
 
@@ -29,6 +32,9 @@ function handleRequest(req, res) {
   }
 }
 
+
+
+
 // function chooses to put out html pages
 function renderHTML(filePath, res) {
   return fs.readFile(__dirname + filePath, function(err, data) {
@@ -37,6 +43,9 @@ function renderHTML(filePath, res) {
     res.end(data);
   });
 }
+
+
+
 
 //function saves input text as note in db
 function renderNote(req, res) {
@@ -57,13 +66,17 @@ function renderNote(req, res) {
     var textdata = requestData.substring(
       requestData.lastIndexOf("text=") + 5);
     //add saved data to table object
-    obj.table.push({Title: titledata, text: textdata});
-    var jsonobj = JSON.stringify(obj);
+    jason.table.push({
+      Title: titledata, 
+      text: textdata
+    });
+    var jsonobj = JSON.stringify(jason);
     //save to json
-    fs.appendFile(jsonfile, jsonobj, function(err) {
+    fs.writeFile(jsonfile, jsonobj, function(err) {
       if (err) throw err;
       console.log("Added to file");
     });
+
     myHTML =
       "<html><head><title>Hello Noder!</title></head><body>" +
       "<h1>Thank you for the data: </h1><code>" +
